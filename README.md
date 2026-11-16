@@ -1,12 +1,18 @@
-# SmartPantry
+ SmartPantry
 
-**A Food Inventory and Expiration Tracking System**
+ Project Demonstration Video
+
+Watch our SmartPantry application demonstration:
+
+[Click here to watch the SmartPantry Demo] https://drive.google.com/file/d/1ZZvVRbshj8U133SOJ_idSKG5Yr9HyNIJ/view?usp=sharing
+
+A Food Inventory and Expiration Tracking System**
 
 SmartPantry is a small web application for recording household food items, checking their recorded expiration dates, and helping users prioritize items that may need attention. It was planned as a two-week CS121 Programming Languages project and demonstrates imperative, functional, logic, and object-oriented programming.
 
 > Important: SmartPantry provides date-based reminders only. It does not determine whether food is safe to eat. Always follow product labels, storage instructions, and local food-safety guidance.
 
-## 1. Main features
+ 1. Main features
 
 - Add, edit, view, and delete pantry items.
 - Store category, quantity, unit, purchase date, optional expiration date, and notes.
@@ -19,7 +25,7 @@ SmartPantry is a small web application for recording household food items, check
 
 The default "Expiring soon" window is 0 to 3 days, inclusive. This is a configurable project rule, not a food-safety recommendation.
 
-## 2. Technology stack
+ 2. Technology stack
 
 | Layer | Technology | Purpose |
 |---|---|---|
@@ -29,7 +35,7 @@ The default "Expiring soon" window is 0 to 3 days, inclusive. This is a configur
 | Logic engine | SWI-Prolog | Facts, rules, and logical classification |
 | Version control | Git and GitHub | Source history and collaboration |
 
-## 3. Requirements
+ 3. Requirements
 
 - Python 3.10 or newer
 - pip
@@ -38,11 +44,11 @@ The default "Expiring soon" window is 0 to 3 days, inclusive. This is a configur
 
 The app can run without SWI-Prolog by using its documented Python fallback. For the CS121 logic-programming demonstration, install SWI-Prolog and confirm that the `swipl` command is available in your terminal.
 
-## 4. Setup
+ 4. Setup
 
-### Windows PowerShell
+ Windows PowerShell
 
-```powershell
+`powershell
 cd SmartPantry
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -57,7 +63,7 @@ If PowerShell blocks virtual-environment activation, use Command Prompt instead:
 .venv\Scripts\activate.bat
 ```
 
-### macOS or Linux
+macOS or Linux
 
 ```bash
 cd SmartPantry
@@ -78,7 +84,7 @@ The SQLite database is stored at `instance/smartpantry.db`. A sample database is
 python seed_demo.py --reset
 ```
 
-## 5. Installing SWI-Prolog
+5. Installing SWI-Prolog
 
 Install SWI-Prolog using the official instructions for your operating system:
 
@@ -94,7 +100,7 @@ Restart the Flask application after installing SWI-Prolog. The dashboard display
 
 The Prolog source is `app/logic/pantry_rules.pl`. The Python adapter is `app/logic/prolog_engine.py`.
 
-## 6. Project structure
+ 6. Project structure
 
 ```text
 SmartPantry/
@@ -136,7 +142,7 @@ SmartPantry/
 `-- seed_demo.py
 ```
 
-## 7. Database
+ 7. Database
 
 The database has one main table, `food_items`:
 
@@ -155,7 +161,7 @@ The database has one main table, `food_items`:
 
 The schema is in `database/schema.sql`. The repository uses parameterized SQL queries.
 
-## 8. Where the four paradigms are demonstrated
+ 8. Where the four paradigms are demonstrated
 
 | Paradigm | Main files | How it appears |
 |---|---|---|
@@ -166,7 +172,7 @@ The schema is in `database/schema.sql`. The repository uses parameterized SQL qu
 
 See `docs/PROJECT_OVERVIEW.md` for the problem, objectives, scope, and SDG alignment; `docs/DEVELOPMENT_PLAN.md` for the two-week schedule; and `docs/PARADIGM_GUIDE.md` for code examples and defense notes. Do not claim that ordinary Python `if` statements are Logic Programming; the Prolog rules are the logic-programming component.
 
-## 9. Run tests
+ 9. Run tests
 
 ```bash
 python -m unittest discover -s tests -v
@@ -174,7 +180,7 @@ python -m unittest discover -s tests -v
 
 The tests cover date functions, summary calculations, SQLite repository operations, and form validation. The Prolog integration can also be checked manually by installing SWI-Prolog and adding or viewing pantry records.
 
-## 10. Suggested GitHub workflow
+ 10. Suggested GitHub workflow
 
 Create an empty repository on GitHub, then run these commands from the project folder:
 
@@ -189,7 +195,7 @@ git push -u origin main
 
 Replace the remote URL with your own repository URL. Commit regularly and use clear messages, for example `Add pantry item form` or `Connect Prolog classification`.
 
-## 11. Scope and limitations
+11. Scope and limitations
 
 - This is a local household pantry prototype, not a commercial food-safety system.
 - There is no user account or multi-household access control in this first version.
