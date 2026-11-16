@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | SmartPantry{% endblock %}
+{% block content %}
+<section class="hero-panel mb-4">
+    <div>
+        <p class="eyebrow">HOUSEHOLD FOOD INVENTORY</p>
+        <h1 class="display-6 fw-semibold mb-2">A clearer view of your pantry.</h1>
+        <p class="hero-copy mb-0">Keep track of what you have and which recorded dates may need attention.</p>
+    </div>
+    <a class="btn btn-dark" href="{{ url_for('main.create_item') }}">Add a food item</a>
+</section>
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h2 class="section-title mb-1">Pantry overview</h2>
+        <p class="muted-copy mb-0">A summary of your current inventory.</p>
+    </div>
+    <span class="engine-note">Classification engine: <strong>{{ engine_name }}</strong></span>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="stat-card">
+            <span class="stat-label">Food records</span>
+            <span class="stat-number">{{ summary.total_items }}</span>
+            <span class="stat-foot">Items in your pantry</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card stat-card-warm">
+            <span class="stat-label">Expiring soon</span>
+            <span class="stat-number">{{ summary.expiring_soon }}</span>
+            <span class="stat-foot">Within the next 3 days</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card stat-card-alert">
+            <span class="stat-label">Past recorded date</span>
+            <span class="stat-number">{{ summary.expired }}</span>
+            <span class="stat-foot">Review the item and label</span>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card stat-card-cool">
+            <span class="stat-label">Categories</span>
+            <span class="stat-number">{{ summary.category_count }}</span>
+            <span class="stat-foot">Different food groups</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <section class="content-card h-100">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <h2 class="section-title mb-1">Needs attention</h2>
+                    <p class="muted-copy mb-0">Items with a past or approaching recorded expiration date.</p>
+                </div>
+                <a class="small-link" href="{{ url_for('main.inventory') }}">View inventory</a>
+            </div>
+            {% if attention_items %}
+                <div class="table-responsive">
+                    <table class="table align-middle app-table mb-0">
+                        <thead><tr><th>Food item</th><th>Recorded date</th><th>Status</th><th>Priority</th></tr></thead>
+                        <tbody>
+                        {% for view in attention_items %}
+                            <tr>
+                                <td><strong>{{ view.item.name }}</strong><span class="d-block table-subtext">{{ view.item.category }}</span></td>
+                                <td>{% if view.item.expiry_date %}{{ view.item.expiry_date.strftime('%b %d, %Y') }}{% else %}Not set{% endif %}</td>
+                                <td><span class="status-pill {{ status_classes[view.expiry_status] }}">{{ status_labels[view.expiry_status] }}</span></td>
+                                <td><span class="priority-pill {{ priority_classes[view.priority] }}">{{ priority_labels[view.priority] }}</span></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-mark">OK</div>
+                    <h3 class="h6 fw-semibold">Nothing needs attention right now</h3>
+                    <p class="muted-copy mb-0">Add food items with their recorded dates to start tracking your pantry.</p>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+    <div class="col-lg-5">
+        <section class="content-card h-100">
+            <h2 class="section-title mb-1">Pantry snapshot</h2>
+            <p class="muted-copy mb-3">A quick look at the items in your pantry.</p>
+            {% if recent_items %}
+                <div class="recent-list">
+                    {% for view in recent_items %}
+                        <div class="recent-row">
+                            <div class="food-dot">{{ view.item.name[:1]|upper }}</div>
+                            <div class="flex-grow-1 min-w-0">
+                                <strong class="d-block text-truncate">{{ view.item.name }}</strong>
+                                <span class="table-subtext">{{ '%g'|format(view.item.quantity) }} {{ view.item.unit }} - {{ view.item.category }}</span>
+                            </div>
+                            <span class="status-pill {{ status_classes[view.expiry_status] }}">{{ status_labels[view.expiry_status] }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state compact-empty">
+                    <p class="muted-copy mb-2">Your pantry is empty.</p>
+                    <a class="btn btn-outline-dark btn-sm" href="{{ url_for('main.create_item') }}">Add your first item</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+
+<div class="notice-panel mt-4">
+    <strong>Reminder:</strong> These alerts compare today's date with the date entered in the app. They do not assess food quality or safety. Check labels and storage guidance before using food.
+</div>
+{% endblock %}

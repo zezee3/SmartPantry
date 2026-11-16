@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Inventory | SmartPantry{% endblock %}
+{% block content %}
+<div class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+        <p class="eyebrow">YOUR HOUSEHOLD STOCK</p>
+        <h1 class="section-heading mb-1">Food inventory</h1>
+        <p class="muted-copy mb-0">Search, review, and update the items stored in your pantry.</p>
+    </div>
+    <a class="btn btn-dark" href="{{ url_for('main.create_item') }}">+ Add food item</a>
+</div>
+
+<section class="content-card">
+    <form method="get" action="{{ url_for('main.inventory') }}" class="row g-2 align-items-end mb-4">
+        <div class="col-md-6">
+            <label class="form-label" for="q">Search food</label>
+            <input class="form-control" type="search" id="q" name="q" value="{{ search }}" placeholder="e.g. milk, rice, apples">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="category">Category</label>
+            <select class="form-select" id="category" name="category">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-outline-dark" type="submit">Filter</button>
+        </div>
+    </form>
+
+    {% if item_views %}
+        <div class="table-responsive">
+            <table class="table align-middle app-table inventory-table mb-0">
+                <thead><tr><th>Food item</th><th>Category</th><th>Quantity</th><th>Expiration date</th><th>Status</th><th>Priority</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                {% for view in item_views %}
+                    <tr>
+                        <td><strong>{{ view.item.name }}</strong>{% if view.item.notes %}<span class="d-block table-subtext">{{ view.item.notes }}</span>{% endif %}</td>
+                        <td>{{ view.item.category }}</td>
+                        <td>{{ '%g'|format(view.item.quantity) }} {{ view.item.unit }}</td>
+                        <td>{% if view.item.expiry_date %}{{ view.item.expiry_date.strftime('%b %d, %Y') }}{% else %}<span class="muted-copy">Not set</span>{% endif %}</td>
+                        <td><span class="status-pill {{ status_classes[view.expiry_status] }}">{{ status_labels[view.expiry_status] }}</span></td>
+                        <td><span class="priority-pill {{ priority_classes[view.priority] }}">{{ priority_labels[view.priority] }}</span></td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-light border" href="{{ url_for('main.edit_item', item_id=view.item.id) }}">Edit</a>
+                            <form class="d-inline" method="post" action="{{ url_for('main.delete_item', item_id=view.item.id) }}" onsubmit="return confirm('Delete this pantry item?');">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-mark">SP</div>
+            <h2 class="h5 fw-semibold">No matching food items</h2>
+            <p class="muted-copy">Try another search or add a food item to your pantry.</p>
+            <a class="btn btn-dark btn-sm" href="{{ url_for('main.create_item') }}">Add food item</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
